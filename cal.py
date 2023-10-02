@@ -2,27 +2,46 @@ import streamlit as st
 
 def calculator(expression):
     try:
-        # 연산 수행
         result = eval(expression)
-        # 10자리 숫자를 초과하면 'Infinity' 표시
         if len(str(result)) > 10:
-            return 'Infinity'
+            return '자리수 초과'
         return result
-    except ZeroDivisionError:  # 0으로 나누는 경우
+    except ZeroDivisionError:
         return '숫자 아님'
     except:
         return '오류'
 
+# CSS 스타일 추가
+st.markdown(
+    """
+    <style>
+        .stTextInput input {
+            border-radius: 15px;
+            font-size: 25px;
+        }
+        .stButton>button {
+            width: 100%;
+            border-radius: 7.5px;
+            background-color: #967bb6;
+            color: white;
+            font-size: 25px;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.title("세뱃돈 계산기")
 
 expression = st.session_state.get("expression", "")
+expression = st.text_input("", expression, max_chars=None)
 
-# 버튼 구현
 buttons = [
     ['7', '8', '9', '/'],
     ['4', '5', '6', '\*'],
     ['1', '2', '3', '\-'],
-    ['0', 'C', '=', '\+']
+    ['0', '.', 'C', '\+'],
+    ['=',]
 ]
 
 for row in buttons:
@@ -36,12 +55,6 @@ for row in buttons:
                 expression = str(result)
             else:
                 expression += button_text
-
 st.session_state.expression = expression
-st.text_input("입력창", expression)
-
-if st.button("AC"):
-    expression = ""
-    st.session_state.expression = ""
 
 st.write("결과:", calculator(expression))
